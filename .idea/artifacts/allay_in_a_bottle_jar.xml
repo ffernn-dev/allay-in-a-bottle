@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="allay-in-a-bottle:jar">
+    <output-path>$USER_HOME$/Documents/heheserver/2.0/plugins</output-path>
+    <root id="archive" name="allay-in-a-bottle.jar">
+      <element id="module-output" name="allay-in-a-bottle" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.7.10/kotlin-stdlib-jdk8-1.7.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/23.0.0/annotations-23.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib/1.7.10/kotlin-stdlib-1.7.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib-common/1.7.10/kotlin-stdlib-common-1.7.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.7.10/kotlin-stdlib-jdk7-1.7.10.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

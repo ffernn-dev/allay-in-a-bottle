@@ -1,0 +1,4 @@
+name: AllayInABottle
+version: '${project.version}'
+main: me.ffernn.allayinabottle.AllayInABottle
+api-version: 1.19

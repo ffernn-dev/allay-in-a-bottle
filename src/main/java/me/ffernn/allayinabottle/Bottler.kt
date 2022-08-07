@@ -2,6 +2,7 @@ package me.ffernn.allayinabottle
 
 import de.tr7zw.changeme.nbtapi.NBTItem
 import net.kyori.adventure.key.Key
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
@@ -15,7 +16,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import java.util.Vector
 import kotlin.random.Random
 
 
@@ -27,24 +27,25 @@ class Bottler : Listener {
 
         if (usedItem.type == Material.GLASS_BOTTLE && !isAlreadyAllayBottle){
             var allayBottle = ItemStack(Material.GLASS_BOTTLE, 1)
-            val nbti = NBTItem(allayBottle)
-            val display = nbti.addCompound("display")
-            display.setString("Name", "{\"text\":\"Bottle of Allay\",\"italic\":false}")
-            nbti.setInteger("CustomModelData", 6250)
-            allayBottle = nbti.item
+
+            entity.remove()
 
             allayBottle.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1)
             val updatedMeta = allayBottle.itemMeta
             updatedMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
             allayBottle.itemMeta = updatedMeta
 
+            val nbti = NBTItem(allayBottle)
+            val display = nbti.addCompound("display")
+            display.setString("Name", "{\"text\":\"Bottle of Allay\",\"italic\":false}")
+            nbti.setInteger("CustomModelData", 6250)
 
-            entity.remove()
+            allayBottle = nbti.item
 
             usedItem.amount = usedItem.amount - 1
             val unGiveable = player.inventory.addItem(allayBottle)
-            for ((p, value) in unGiveable) {
-                player.world.dropItem(player.location, value).velocity = player.location.direction.clone().multiply(0.5)
+            for ((_, value) in unGiveable) {
+                player.world.dropItem(player.location, value).velocity = player.location.direction.clone().multiply(0.2)
             }
 
             player.playSound(net.kyori.adventure.sound.Sound.sound(Key.key("entity.slime.squish_small"), net.kyori.adventure.sound.Sound.Source.NEUTRAL, 1f, Random.nextFloat()))
@@ -67,10 +68,23 @@ class Bottler : Listener {
     @EventHandler
     fun onBlockClick(event: PlayerInteractEvent) {
         if (event.action == Action.RIGHT_CLICK_BLOCK) {
-            val eventPlayer = event.player
-            val heldItem = NBTItem(eventPlayer.inventory.itemInMainHand)
-            if (eventPlayer.inventory.itemInMainHand.type == Material.GLASS_BOTTLE && heldItem.getInteger("CustomModelData") == 6250){
-                eventPlayer.sendMessage("let out allay")
+            val player = event.player
+            val usedItem = if (event.hand == EquipmentSlot.HAND) player.inventory.itemInMainHand else player.inventory.itemInOffHand
+
+            if (usedItem.type == Material.GLASS_BOTTLE){
+                val usedItemNBT = NBTItem(usedItem)
+                if(usedItemNBT.getInteger("CustomModelData") == 6250){
+                    val location = event.interactionPoint//event.clickedBlock?.getRelative(event.blockFace)?.location
+                    if (location != null) {
+                        player.world.spawnEntity(location, EntityType.ALLAY)
+                        usedItem.amount = usedItem.amount - 1
+
+                        val unGiveable = player.inventory.addItem(ItemStack(Material.GLASS_BOTTLE))
+                        for ((_, value) in unGiveable) {
+                            player.world.dropItem(player.location, value)
+                        }
+                    }
+                }
             }
         }
     }
